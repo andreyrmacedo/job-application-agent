@@ -1,0 +1,29 @@
+# ---- Personal data: never commit ------------------------------------------
+config/profile.yaml
+resume/
+notes.txt
+
+# ---- Secrets ---------------------------------------------------------------
+# .env.secrets is covered by .env.*
+.env
+.env.*
+!.env.example
+
+# ---- Python ----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# ---- Run output ------------------------------------------------------------
+.playwright-mcp/
+data/
+page.png
+
+# ---- Editors and tools -----------------------------------------------------
+.idea/
+.vscode/
+.spyproject/
+.claude/
+*.swp

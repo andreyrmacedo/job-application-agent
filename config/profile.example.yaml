@@ -1,0 +1,162 @@
+# =============================================================================
+# PROFILE — who you are. The only source the agents may fill answers from.
+# Copy to profile.yaml (gitignored) and replace every value with your own:
+#
+#   cp config/profile.example.yaml config/profile.yaml
+#
+# The candidate below is fictional.
+# =============================================================================
+
+personal:
+  first_name: Alex
+  last_name: Rivera
+  full_name: Alex Rivera
+  email: alex.rivera@example.com
+  phone: "555-010-0199"
+  phone_country: Canada
+  phone_country_code: "+1"
+  phone_device_type: Mobile   # Workday "Phone Device Type" dropdown (Mobile/Home/Work)
+  address_line1: 100 Example Street
+  city: Toronto
+  province: Ontario
+  province_code: "ON"          # some forms want the 2-letter code
+  postal_code: A1A 1A1
+  country: Canada
+
+links:
+  linkedin: https://www.linkedin.com/in/alex-rivera-example/
+  github: https://github.com/alex-rivera-example
+  portfolio: ""
+
+work_authorization:
+  authorized_canada: true
+  authorized_us: false
+  status: Canadian Citizen
+  requires_sponsorship: false
+  # Common screening phrasings -> canonical answer
+  legally_authorized_to_work: "Yes"
+  require_visa_sponsorship: "No"
+
+# Bullets are copied verbatim into "describe your role" fields: write them as you
+# want them to appear.
+work_history:
+  - title: Data Scientist
+    department: Analytics
+    company: Example Financial
+    location: Toronto, Ontario
+    start: "2022-03"
+    end: present
+    current: true
+    bullets:
+      - "Fraud Scoring: Built a gradient-boosting model that ranks risky transactions for review, cutting manual review time by 40%."
+      - "Document Extraction: Fine-tuned a transformer to pull key fields from scanned contracts, replacing a manual data-entry step."
+
+  - title: Data Analyst
+    company: Example Retail
+    location: Toronto, Ontario
+    start: "2019-06"
+    end: "2022-02"
+    current: false
+    bullets:
+      - "Reporting: Automated weekly sales reporting with Python and SQL, saving 6 hours per week."
+
+# degree_options / field_of_study_search: the spellings to try in search-as-you-type
+# fields (Workday), most specific first.
+education:
+  - degree: Master of Science in Statistics
+    school: University of Example
+    location: Toronto, Ontario
+    field_of_study: Statistics
+    start: "2017-09"
+    end: "2019-05"
+    degree_options: ["Master's Degree", "Master", "Graduate Degree"]
+    field_of_study_search: ["Statistics", "Mathematics"]
+    coursework: Machine Learning, Bayesian Statistics, Time Series
+
+  - degree: Bachelor of Science in Mathematics
+    school: Example College
+    location: Ottawa, Ontario
+    field_of_study: Mathematics
+    start: "2013-09"
+    end: "2017-05"
+    degree_options: ["Bachelor's Degree", "Bachelor", "Bachelor of Science"]
+    field_of_study_search: ["Mathematics"]
+    coursework: Linear Algebra, Probability, Numerical Methods
+
+# Total years of professional experience (for "years of experience" fields)
+years_experience: 5
+
+skills:
+  - name: Machine Learning
+    category: domain
+  - name: Python
+    category: language
+  - name: SQL
+    category: language
+  - name: PyTorch
+    category: framework
+
+# The resume to upload. Relative to the repo root; resume/ is gitignored.
+# Only the files listed here can be uploaded (settings.safe_files).
+resumes:
+  default: resume/resume.pdf
+
+# Seeds for open-ended answers ("Why this role?"). The Answer Writer may rephrase
+# these, never add facts to them.
+prose:
+  headline: >-
+    Data scientist who ships fraud and document-AI models to production in
+    regulated finance.
+  why: >-
+    I like problems where a model changes a decision someone makes the same day.
+
+# Voluntary self-identification. `default_answer` covers anything not listed.
+eeo:
+  default_answer: Decline to self-identify
+
+locations:
+  current: Toronto, ON, Canada
+  open_to_remote: true
+  open_to_relocation: false
+  preferred:
+    - Toronto, ON
+    - Remote (Canada)
+
+availability:
+  notice_period: "2 weeks"
+  earliest_start: "2 weeks from offer"
+
+# Canned answers to common screening questions. The filler matches each question
+# to the closest key by meaning. Add more as you meet new ones.
+screening_answers:
+  authorized_to_work: "Yes"
+  require_sponsorship: "No"
+  willing_to_relocate: "No"
+  commit_office: "Yes"
+  years_of_experience: "5"
+  highest_education: "Master's degree"
+  how_did_you_hear: "LinkedIn"
+  reference: ""                     # leave references blank
+  previously_employed_here: "No"
+  current_employee: "No"
+  non_compete: "No"
+  accommodation: "No"
+
+# Applies to MANDATORY salary fields only; optional ones are left blank.
+#   target = min(max(jd_band_high, floor), ceiling), or no_band_value without a band
+salary:
+  enabled: true
+  mirror_posting_band_when_shown: true
+  floor: 90000
+  ceiling: 120000
+  default_currency: CAD
+  target_rule: jd_band_high_clamped
+  no_band_value: 100000
+  free_text_required:
+    template: "{target} {currency}, negotiable based on total compensation"
+  numeric_min_max_required:
+    low: target
+    high: ceiling
+  single_numeric_box_required:
+    use: target
+    custom_value: null

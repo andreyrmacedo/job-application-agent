@@ -1,0 +1,29 @@
+<!doctype html><html><head><title>Careers</title>
+<style>#footer{position:fixed;bottom:0;left:0;right:0;height:60px;background:#eee}
+.dd ul{display:none;border:1px solid #999;list-style:none;padding:0}.dd.open ul{display:block}</style></head><body>
+<header><a href="#">Example Bank Careers</a> <button>English</button> <button>Sign In</button></header>
+<main id="main"></main>
+<div id="footer">© 2026 Example Bank</div>
+<script>
+// Like Workday: the page shell is there at once; the form arrives ~7 s later
+setTimeout(() => {
+  document.title = 'Apply - Data Scientist, Fraud';
+  document.getElementById('main').innerHTML = `
+  <h2>Data Scientist, Fraud</h2><h3>My Information</h3>
+  <form onsubmit="return false">
+   <label>First Name* <input id="first" name="first"></label><br>
+   <label>Last Name* <input id="last" name="last"></label><br>
+   <label>Email* <input id="email" type="email" name="email"></label><br>
+   <label>Phone Number* <input id="phone" name="phone"></label><br>
+   <label>City* <input id="city" name="city"></label><br>
+   <div class="dd" id="country"><span id="country-label">Country*</span>
+     <button type="button" aria-haspopup="listbox" aria-labelledby="country-label country-value" id="country-btn"
+       onclick="this.parentElement.classList.toggle('open')"><span id="country-value">Select One</span></button>
+     <ul role="listbox" aria-label="Country options">
+       ${['Brazil','Canada','France','United States'].map(c => `<li role="option" tabindex="-1" onclick="document.getElementById('country-value').textContent='${c}';this.closest('.dd').classList.remove('open')">${c}</li>`).join('')}
+     </ul></div>
+   <label><input type="checkbox" id="consent"> I agree to the privacy policy*</label><br>
+   <button type="button" id="save" onclick="document.title='SAVED'; location.href='/done.html'">Save and Continue</button>
+  </form>`;
+}, 7000);
+</script></body></html>
