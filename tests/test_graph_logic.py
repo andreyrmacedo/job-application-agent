@@ -25,7 +25,7 @@ from browser_tools import is_target, list_tabs
 from graph.nodes import salary_target
 from graph.routing import route_after_explore, route_after_navigate, router_after_fill
 from graph.state import merge_explorer
-from settings import ClearToolUsesInSteps, same_action
+from settings import ClearToolUsesInSteps, same_action, strip_tabs
 
 
 #%% HELPERS
@@ -199,3 +199,28 @@ def test_trimming_waits_for_the_trigger():
     messages = tool_history(30)
     ClearToolUsesInSteps(trigger=75_000, keep=3, step=10).apply(messages, count_tokens=lambda m: 1_000)
     assert all(m.content != '[cleared]' for m in messages if isinstance(m, ToolMessage))
+
+
+#%% TAB LIST
+
+def test_strip_tabs_keeps_the_current_page():
+    text = (
+        "### Ran Playwright code\n```js\nawait page.click();\n```\n"
+        "### Open tabs\n"
+        "- 0: (current) [Job | LinkedIn](https://www.linkedin.com/jobs/view/1/?eBP=abc&refId=x)\n"
+        "- 1: [Apply](https://x.wd5.myworkdayjobs.com/apply?source=LinkedIn)\n"
+        "### Page\n"
+        "- Page URL: https://www.linkedin.com/jobs/view/1/?eBP=abc&refId=x\n"
+        "- Page Title: Job | LinkedIn\n"
+        "### Snapshot\n- [Snapshot](.playwright-mcp/page.yml)"
+    )
+    out = strip_tabs(text)
+    assert '### Open tabs' not in out and 'myworkdayjobs' not in out
+    assert '- Page URL: https://www.linkedin.com/jobs/view/1/\n' in out
+    assert out.startswith('### Ran Playwright code') and out.endswith('- [Snapshot](.playwright-mcp/page.yml)')
+    assert '- Page Title: Job | LinkedIn' in out
+
+
+def test_strip_tabs_without_a_tab_list():
+    text = "### Result\nWaited for 3 seconds\n### Page\n- Page URL: https://a.com/x\n"
+    assert strip_tabs(text) == text

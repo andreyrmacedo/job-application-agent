@@ -33,6 +33,7 @@ from settings import (
     log_tool_calls,
     block_repeats,
     safe_files,
+    strip_tab_list,
     GRAPH_RECURSION_LIMIT,
     TAB_TIMEOUT,
     MODEL,
@@ -132,7 +133,7 @@ async def main(timeout=TAB_TIMEOUT):
     async with make_browser_client().session('playwright') as session:
         tools = await load_mcp_tools(session)
         tabs_tool = next(t for t in tools if t.name == 'browser_tabs')
-        graph = build_graph(tools, middleware=[log_tool_calls, block_repeats, safe_files])
+        graph = build_graph(tools, middleware=[log_tool_calls, block_repeats, safe_files, strip_tab_list])
 
         targets = await find_targets(tabs_tool)
         print(f"[loop] {len(targets)} target tab(s)")

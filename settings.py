@@ -19,6 +19,7 @@ from langchain_core.messages import ToolMessage
 
 from dataclasses import dataclass, replace
 from pathlib import Path
+import re
 import yaml
 
 
@@ -57,9 +58,9 @@ class ClearToolUsesInSteps(ClearToolUsesEdit):
         n_clear = max(0, n - self.keep) // self.step * self.step
         ClearToolUsesEdit.apply(replace(self, keep=n - n_clear), messages, count_tokens=count_tokens)
 
-# Past ~75k tokens, clear old tool results 10 at a time; always keep the newest 3
+# Past ~80k tokens, clear old tool results 10 at a time; always keep the newest 3
 TRIM_TOOL_CONTEXT = ContextEditingMiddleware(
-    edits=[ClearToolUsesInSteps(trigger=75_000, keep=3, step=10)]
+    edits=[ClearToolUsesInSteps(trigger=80_000, keep=3, step=10)]
 )
 
 BROWSER_URL = os.getenv('BROWSER_URL') or "http://localhost:9222" # browser (CDP)
@@ -205,6 +206,36 @@ async def safe_files(request, handler):
         request = request.override(tool_call=call)
 
     return await handler(request)
+
+
+# '### Open tabs' up to the next section, and the query of the page URL
+OPEN_TABS = re.compile(r'^### Open tabs\n.*?(?=^### |\Z)', re.M | re.S)
+PAGE_URL_QUERY = re.compile(r'^(- Page URL: [^?#\s]+)[?#]\S*', re.M)
+
+def strip_tabs(text):
+    return PAGE_URL_QUERY.sub(r'\1', OPEN_TABS.sub('', text))
+
+
+@wrap_tool_call
+async def strip_tab_list(request, handler):
+    """
+    Drop the MCP's list of every open tab from tool results, snapshots
+    included. The agents work on the current tab only; the graph switches tabs
+    itself (direct browser_tabs calls don't pass through here).
+    """
+    result = await handler(request)
+    if not isinstance(result, ToolMessage):
+        return result
+
+    content = result.content
+    if isinstance(content, str):
+        content = strip_tabs(content)
+    else:
+        content = [
+            {**b, 'text': strip_tabs(b['text'])} if isinstance(b, dict) and b.get('type') == 'text' else b
+            for b in content
+        ]
+    return result.model_copy(update={'content': content})
 
 
 #%% LOAD THE PROFILE
