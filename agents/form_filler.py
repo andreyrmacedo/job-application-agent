@@ -38,7 +38,8 @@ For the CURRENT ACTIVE PAGE:
 3. Fill ONLY fields with certain values
 4. Make sure to fill mandatory fields
 5. Skip anything uncertain or open-ended
-6. Report results in structured format
+6. Upload the resume if an appropriate upload field is available
+7. Report results in structured format
 
 ---
 
